@@ -5,4 +5,4 @@
 - `Test.ipynb`: File notebook thực nghiệm trên dữ liệu mới (từ 1/1/2020 đến 13/8/2020).
 - `models`: Thư mục chứa file model đã được trained.
 - `images`: Thư mục chứa ảnh.
-
+- `data`: Thư mục chứa dữ liệu mã cổ phiếu SSI từ năm 2017 đến 2024.

@@ -23,7 +23,7 @@ act_range = {'high': train_env.action_space.high, 'low': train_env.action_space.
 
 n_episodes = 10
 batch_size = 64
-epsilon = {'start': 0.9, 'decay': 0.05, 'min': 0.001}
+epsilon = {'start': -np.inf, 'decay': 0.05, 'min': 0.001}
 max_timesteps = 200
 reward_hist = []
 noise_scale = 0.1
@@ -59,8 +59,6 @@ for episode in range(n_episodes):
         state = next_state
         ep_reward += reward
     
-    if episode >= 1:
-        agent.epsilon = -np.inf
 
     agent.save_model()
     

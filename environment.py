@@ -18,24 +18,20 @@ class StockTradingEnv():
 
         self.LOOKBACK_WINDOW_SIZE = 40
 
-        adjust_ratio = df['adjust_close'] / df['close']
         df['open'] = df['open'] / df['open'].max()
         df['high'] = df['high'] / df['high'].max()
-        df['low'] = df['low'] / adjust_ratio
+        df['low'] = df['low'] / df['low'].max()
         df['close'] = df['close'] / df['close'].max()
 
         self.df = df
 
-        # buy x%, sell x%, hold, etc.
-        self.action_space = spaces.Box(low=np.array([0, 0]), high=np.array([3, 1]), dtype=np.float16)
+        # buy x%, sell x%, hold, etc. observation_space is 40 last days and current day
+        self.action_space = spaces.Box(low=np.array([0]), high=np.array([7]), dtype=np.float16)
         self.observation_space = spaces.Box(low=0, high=1, shape=(1, self.LOOKBACK_WINDOW_SIZE + 1), dtype=np.float16)
 
     
     def step(self, action):
         current_price = self.df.loc[self.current_step, "close"]
-
-        action_type = action[0]
-        amount = action[1]
 
         reward = 0
         done = False
@@ -45,10 +41,10 @@ class StockTradingEnv():
             # Buy amount % of balance in shares
             total_possible = int(self.balance / current_price)
             shares_bought = int(total_possible * amount)
-            prev_cost = self.cost_basis * self.shares_held
             additional_cost = shares_bought * current_price
 
             self.balance -= additional_cost
+            prev_cost = self.cost_basis * self.shares_held
             self.cost_basis = (prev_cost + additional_cost) / (self.shares_held + shares_bought)
             self.shares_held += shares_bought
 

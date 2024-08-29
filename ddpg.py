@@ -66,19 +66,18 @@ class DDPGAgent:
             q_target = reward + (1 - done) * self.gamma * q_target_next
 
         q_val = self.critic(state, action)
+
+	# critic
         critic_loss = nn.MSELoss()(q_val, q_target)
-
-        # actor loss
-        actor_loss = -self.critic(state, self.actor(state)).mean()
-
-        # update networks
-        self.actor_optimizer.zero_grad()
-        actor_loss.backward()
-        self.actor_optimizer.step()
-
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         self.critic_optimizer.step()
+
+        # actor
+        actor_loss = -self.critic(state, self.actor(state)).mean()
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
 
         # soft update target networks
         self.soft_update(self.actor, self.actor_target)
